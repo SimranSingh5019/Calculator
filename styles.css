@@ -1,0 +1,34 @@
+.calculator{
+    display: flex;
+    height : 250px;
+    width :220px;
+    flex-wrap: wrap;
+}
+.btn{
+    flex:1 1 calc(100%/16);
+    padding:10px 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.total{
+  
+    height:100vh;
+    widht:100vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.display{
+    border: 1px solid;
+    width : 220px;
+    max-height: 80px;
+    text-align: right;
+    
+    
+}
+#myH1{
+    padding: 10px 20px;
+    font-size: 2rem;
+    font-weight: bold;
+}
