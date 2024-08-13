@@ -1,93 +1,77 @@
-let num = document.querySelectorAll(".num");
-let display = document.getElementById("myH1");
-let clr = document.querySelector(".clr")
-function operate(num1,num2,op){
-    let sum = 0;
-    switch(op){
-        case "+":
-            sum=add(num1,num2);
-            break;
-        case '-':
-            sum = subtract(num1,num2)
-            break;
-        case '*':
-            sum = multiply(num1,num2);
-            break;
-        case "/":
-            sum = divide(num1,num2);
-            break;
-        default:
-            break;
+const display = document.getElementById("myH1");
+const digitBtn = document.querySelectorAll(".digit");
+const operator = document.querySelectorAll(".operator");
+const calculate = document.querySelector(".calculate");
+const clear = document.querySelector(".clear");
+let val = "";
+let operatorSymbol = "";
+let op1 = null;
+let isOperatorClicked = false;
 
-    }
-    return sum;
-    
-        
-
-}
-function add(num1,num2){
-    return num1+num2;
-}
-function subtract(num1,num2){
-    return num1-num2;
-}
-function multiply(num1,num2){
-    return num1*num2;
-}
-function divide(num1,num2){
-   if(num2==0){
-       return "invalid";
-   }
-   else{
-       return num1/num2;
-   }
-}
-function fun1(){
-    let val = "";
-let operator = false;
-let op2 = "";
-let n1 = 0;
-let n2= 0;
-num.forEach(n=>{  
-    n.addEventListener("click",()=>{
-        if(n.textContent=="="){
-            val = "";
-            n1 = operate(n1,n2,op2);
-            val += String(n1);
-            display.textContent = val;
-            n2 =0;
+digitBtn.forEach(bt => {
+    bt.addEventListener("click", () => {
+        if (isOperatorClicked) {
+            val = ""; 
+            isOperatorClicked = false;
         }
-        else if(n.textContent==="+" || n.textContent==="-" ||n.textContent==="*" ||n.textContent==="/" ){
-            if(operator==true){
-                val = "";
-                n1 = operate(n1,n2,op2);
-                val += String(n1);
-                display.textContent = `${val}${n.textContent}`;
-                n2 = 0;
-            }
-           else{
-            operator = true;
-           }
-           op2 = n.textContent ;
-            console.log(`Operator is : ${op2}`);
-        }
-        else if(operator === true){
-            n2 = n2*10 + Number(n.textContent);
-            console.log(`num2 is : ${n2}`);
-        }
-        else{
-            n1 = n1*10+ Number(n.textContent);
-            console.log(`num1 is : ${n1}`);
-        }
-        if(n.textContent!='='){
-            val+=n.textContent;
-            display.textContent = val;
-        }
-        });
-        });
-}
-fun1();
-clr.addEventListener("click",()=>{
- display.textContent = "";
-   fun1();
+        val += bt.textContent;
+        display.textContent = val;
+    });
 });
+
+operator.forEach(op => {
+    op.addEventListener("click", () => {
+        if (op1 === null) {
+            op1 = display.textContent;
+            operatorSymbol = op.textContent;
+            isOperatorClicked = true;
+        } else {
+            let op2 = display.textContent;
+            let result = operate(Number(op1), Number(op2), operatorSymbol);
+            display.textContent = roundTo(result,10);
+            op1 = result; 
+            operatorSymbol = op.textContent;
+            isOperatorClicked = true;
+        }
+    });
+});
+
+calculate.addEventListener("click", () => {
+    if (op1 !== null && operatorSymbol !== "") {
+        let op2 = display.textContent;
+        let result = operate(Number(op1), Number(op2), operatorSymbol);
+        display.textContent = roundTo(result,10);
+        op1 = null;
+        operatorSymbol = "";
+        val = result; 
+    }
+});
+
+function operate(num1, num2, opC) {
+    if(num1>1e9 || num2>1e9){
+        return NaN;
+    }
+    switch (opC) {
+        case "+":
+            return num1 + num2;
+        case "-":
+            return num1 - num2;
+        case "*":
+            return num1 * num2;
+        case "/":
+            return num2 === 0 ? "Invalid" : num1 / num2;
+        default:
+            return "Error"; 
+    }
+}
+
+clear.addEventListener("click", () => {
+    display.textContent = "0";
+    val = "";
+    operatorSymbol = "";
+    op1 = null;
+    isOperatorClicked = false;
+});
+function roundTo(num, decimals) {
+    return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
